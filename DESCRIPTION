@@ -4,8 +4,14 @@ Title: Nonparametric Effect Size Estimator
 Version: 0.1.0
 Author: Who wrote it
 Maintainer: Barney Ricca <barneyricca@gmail.com>
+<<<<<<< HEAD
 Description: This package contains a function to calculate the nonparametric effect size estimate of Ricca & Blaine (2022). It includes a bootstrap confidence interval procedure.
     Use four spaces when indenting paragraphs within the Description.
+=======
+Description: This package contains a function to calculate the nonparametric
+effect size estimate of Ricca & Blaine (2022). It will include a bootstrap
+confidence interval procedure.
+>>>>>>> dc79d7e (Update)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
