@@ -28,24 +28,26 @@
 
 delta.mad <- function(s1,         # First data vector
                       s2) {       # Second data vector
-  # Check for zero-length inputs
+  1e-12 -> eps                    # For fuzzy comparison to zero; arbitrary
+  # Check for zero-length inputs:
   if(length(s1) == 0 |            # Is s1 zero-length?
      length(s2) == 0) {           # Is s2 zero-length?
     cat("Zero-length input\n")    # If either input is zero-length, say so
     return(NULL)                  #
   }
 
-  # Check for numeric inputs
-  if(mode(s1) != "numeric" |      # Is s1 numeric?
-     mode(s2) != "numeric") {     # Is s2 numeric?
-    cat("Numeric input required\n")     # If either input isn't numeric...
+  # Check for numeric inputs:
+  if(mode(s1) != "numeric" |      # Is s1 non-numeric?
+     mode(s2) != "numeric") {     # Is s2 non-numeric?
+    cat("Numeric input required\n")     # If either input is non-numeric...
     return(NULL)                  #
   }
 
   return(                         # Calculation of delta_MAD
-    ifelse(abs(median(s1) - median(s2)) < 1e-12,   # Arbitrary cutoff
-           0,
-           abs(median(s1) - median(s2)) /
-             (((length(s1) - 1) * mad(s1) - (length(s2) - 1) * mad(s2)) /
-                (length(s1) + length(s2) - 2))))
+    ifelse(
+      abs(median(s1) - median(s2)) < eps,  # zero isn't always zero!
+          0,
+          abs(median(s1) - median(s2)) /
+            (((length(s1) - 1) * mad(s1) + (length(s2) - 1) * mad(s2)) /
+              (length(s1) + length(s2) - 2))))
 }
