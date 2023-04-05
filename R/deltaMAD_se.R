@@ -30,8 +30,9 @@
 #' delta.mad.se(s1, s2)
 delta.mad.se <- function(s1,
                          s2,
-                         alpha = 0.05,  # Confidence level
-                         R = 5000) {    # Number of replications
+                         alpha = 0.05,   # Confidence level
+                         abs_v = FALSE,  # Use absolute value in bootstrapping?
+                         R = 5000) {     # Number of replications
   # Computes a bootstrapped standard error for delta_MAD
 
   1e-12 -> eps                    # For fuzzy comparison to zero; arbitrary
@@ -49,7 +50,17 @@ delta.mad.se <- function(s1,
     return(NULL)                  #
   }
 
-  local_mad <- function(x1, x2) {
+  local_mad_T <- function(x1, x2) {
+    return(
+      ifelse(                # delta_MAD calculation; faster than calling
+        abs(median(x1) - median(x2)) < eps,  # 0 isn't always 0
+        0,
+        (median(x1) - median(x2)) /
+          (((length(x1) - 1) * mad(x1) + (length(x2) - 1) * mad(x2)) /
+             (length(x1) + length(x2) - 2))))
+  }
+
+  local_mad_F <- function(x1, x2) {
     return(
       ifelse(                # delta_MAD calculation; faster than calling
         abs(median(x1) - median(x2)) < eps,  # 0 isn't always 0
@@ -65,11 +76,19 @@ delta.mad.se <- function(s1,
                    replace = TRUE)) ->
     samples
 
-  apply(samples,
-        2,
-        local_mad,
-        s1) ->
-    es
+  if(abs_v == TRUE) {
+    apply(samples,
+          2,
+          local_mad_T,
+          s1) ->
+      es
+  } else {
+    apply(samples,
+          2,
+          local_mad_F,
+          s1) ->
+      es
+  }
 
   return(quantile(x = es,
                   probs = c(alpha/2, (1 - alpha/2))))
