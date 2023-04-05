@@ -63,7 +63,7 @@ delta.mad.se <- function(s1,
   local_mad_F <- function(x1, x2) {
     return(
       ifelse(                # delta_MAD calculation; faster than calling
-        abs(median(x1) - median(x2)) < eps,  # 0 isn't always 0
+        (median(x1) - median(x2)) < eps,  # 0 isn't always 0
         0,
         (median(x1) - median(x2)) /
           (((length(x1) - 1) * mad(x1) + (length(x2) - 1) * mad(x2)) /
